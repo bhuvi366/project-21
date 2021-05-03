@@ -1,64 +1,57 @@
-var bg;
-var cat,catImg1,catImg2,catImg3;
-var mouse,mouseImg1,mouseImg2,mouseImg3;
-function preload() {
-    //load the images here
-    bg = loadImage("images/garden.png");
+var canvas;
+var block1,block2,block3,block4;
+var ball, edges;
+var music;
 
-    catImg1 = loadAnimation("images/cat1.png");
-    catImg2 = loadAnimation("images/cat2.png","images/cat3.png");
-    catImg3 = loadAnimation("images/cat4.png");
-
-    mouseImg1 = loadAnimation("images/mouse1.png");
-    mouseImg2 = loadAnimation("images/mouse2.png","images/mouse3.png");
-    mouseImg3 = loadAnimation("images/mouse4.png");
+function preload(){
+    music = loadSound("music.mp3");
 }
 
+
 function setup(){
-    createCanvas(1000,800);
-    //create cat and mouse sprites here
-    cat = createSprite(900,600);
-    cat.addAnimation("catSitting",catImg1);
-    cat.scale = 0.1;
-    
-    mouse = createSprite(200,600);
-    mouse.addAnimation("mouseStanding",mouseImg1);
-    mouse.scale  = 0.12;
+    canvas = createCanvas(800,600);
+
+    block1 = createSprite(10,580,360,30);
+    block1.shapeColor = rgb(0,0,255);
+
+    block2 = createSprite(295,580,200,30);
+    block2.shapeColor = rgb(255,128,0);
+
+    block3 = createSprite(500,580,200,30);
+    block3.shapeColor = rgb(153,0,76);
+
+    block4 = createSprite(715,580,220,30);
+    block4.shapeColor = rgb(0,100,0);
+
+    ball = createSprite(random(20,750),100, 40,40);
+    ball.shapeColor = rgb(255,255,255);
+    ball.velocityX = 5;
+    ball.velocityY = 10;
+
 }
 
 function draw() {
+    background(rgb(169,169,169));
+    edges=createEdgeSprites();
+    ball.bounceOff(edges);
 
-    background(bg);
-    //Write condition here to evalute if cat and mouse 
-    if(cat.x - mouse.x < (cat.width - mouse.width)/2)
-    { 
-        cat.velocityX=0;
-        cat.addAnimation("catLastImage", catImg3);
-        cat.x =800;
-        cat.changeAnimation("catLastImage");
+    if(block1.isTouching(ball) && ball.bounceOff(block1)){
+        ball.shapeColor = rgb(0,0,255);
+        music.play();
+    }
 
-        mouse.addAnimation("mouseLastImage", mouseImg3);
-        mouse.changeAnimation("mouseLastImage");
-    }  
+    if(block2.isTouching(ball) && ball.bounceOff(block2)){
+        ball.shapeColor = rgb(255,128,0);
+        music.stop();
+    }
 
+    if(block3.isTouching(ball) && ball.bounceOff(block3)){
+        ball.shapeColor = rgb(150,0,70,0);
+    }
+
+    if(block4.isTouching(ball) && ball.bounceOff(block4)){
+        ball.shapeColor = rgb(0,150,0,0);
+    }
 
     drawSprites();
-}
-
-
-function keyPressed(){
-
-  //For moving and changing animation write code here
-
-
-    if(keyCode === LEFT_ARROW){
-        cat.velocityX = -5; 
-        cat.addAnimation("catRunning", catImg2);
-        cat.changeAnimation("catRunning");
-        
-        mouse.addAnimation("mouseTeasing", mouseImg2);
-        mouse.changeAnimation("mouseTeasing");
-
-
-    }
 }
